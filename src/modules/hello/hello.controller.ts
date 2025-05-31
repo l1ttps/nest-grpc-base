@@ -9,7 +9,6 @@ import { GrpcMethod } from '@nestjs/microservices';
 import { GrpcMetadata } from 'src/common/decorators/grpc-metadata.decorator';
 import { GrpcPayload } from 'src/common/decorators/grpc-payload.decorator';
 
-@Controller('hello')
 export class HelloController {
   constructor(private readonly helloService: HelloService) {}
 
