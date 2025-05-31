@@ -5,6 +5,8 @@ import { join } from 'path';
 import { ReflectionService } from '@grpc/reflection';
 import { HELLO_V1_PACKAGE_NAME } from './types/proto/hello';
 import { GrpcProxyModule } from './grpc-proxy/grpc-proxy.module';
+import { PORT } from './configs/config';
+import { Logger } from '@nestjs/common';
 
 async function bootstrap() {
   const grpcProxy = await NestFactory.create(GrpcProxyModule);
@@ -15,14 +17,16 @@ async function bootstrap() {
       options: {
         package: HELLO_V1_PACKAGE_NAME,
         protoPath: join(__dirname, './proto/hello.proto'),
-        url: `0.0.0.0:50051`,
+        url: `0.0.0.0:${PORT}`,
         onLoadPackageDefinition(pkg, server) {
           new ReflectionService(pkg).addToServer(server);
         },
       },
     },
   );
-  await grpcProxy.listen(3002);
+  await grpcProxy.listen(PORT);
   await grpcApp.listen();
+  const logger = new Logger();
+  logger.log(`🚀 Application is running on port ${PORT}`);
 }
 bootstrap();

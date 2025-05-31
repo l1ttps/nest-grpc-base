@@ -5,6 +5,7 @@ import { GrpcServiceMethod } from 'src/types/type';
 import { Request } from 'express';
 import { Metadata } from '@grpc/grpc-js';
 import { convertKeysToCamelCase } from 'src/helper/snakeToCamel';
+import { PORT } from 'src/configs/config';
 @Injectable()
 export class GrpcProxyService {
   private grpcReflectionInstance = {};
@@ -24,8 +25,7 @@ export class GrpcProxyService {
   public async httpToGrpc(req: Request, data: any) {
     const grpcMetadata = new Metadata();
     const { packageName, service, method } = this.getServiceMethod(req);
-    console.log(packageName, service, method);
-    const grpcReflectionServer = `0.0.0.0:50051`;
+    const grpcReflectionServer = `0.0.0.0:${PORT}`;
     const packageObject = await packageObjectHelper({
       credentials: grpc.ChannelCredentials.createInsecure(),
       host: grpcReflectionServer,
