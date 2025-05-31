@@ -7,6 +7,7 @@ import { HELLO_V1_PACKAGE_NAME } from './types/proto/hello';
 import { GrpcProxyModule } from './grpc-proxy/grpc-proxy.module';
 import { PORT } from './configs/config';
 import { Logger } from '@nestjs/common';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 async function bootstrap() {
   const grpcProxy = await NestFactory.create(GrpcProxyModule);
@@ -24,6 +25,15 @@ async function bootstrap() {
       },
     },
   );
+
+  const config = new DocumentBuilder()
+    .setTitle('Nest Grpc Gateway')
+    .setDescription('The Nest Grpc Gateway API description')
+    .setVersion('1.0')
+    .build();
+  const documentFactory = () => SwaggerModule.createDocument(grpcProxy, config);
+  SwaggerModule.setup('api', grpcProxy, documentFactory);
+
   await grpcProxy.listen(PORT);
   await grpcApp.listen();
   const logger = new Logger();

@@ -1,6 +1,7 @@
-import { Body, Controller, Get, Post, Req } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Req } from '@nestjs/common';
 import { GrpcProxyService } from './grpc-proxy.service';
 import { Request } from 'express';
+import { GrpcProxyDto, HttpToGrpcParams } from './grpc.proxy.dto';
 
 @Controller()
 export class GrpcProxyController {
@@ -20,8 +21,12 @@ export class GrpcProxyController {
    * @param data
    * @returns
    */
-  @Post('*')
-  httpToGrpc(@Req() req: Request, @Body() data) {
+  @Post(':package/:service/:method')
+  httpToGrpc(
+    @Req() req: Request,
+    @Body() data: GrpcProxyDto,
+    @Param() _: HttpToGrpcParams,
+  ) {
     return this.grpcProxyService.httpToGrpc(req, data);
   }
 }
