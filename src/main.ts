@@ -22,7 +22,7 @@ async function bootstrap() {
       },
     },
   );
-  await grpcProxy.listen(3000);
+  await grpcProxy.listen(3002);
   await grpcApp.listen();
 }
 bootstrap();
