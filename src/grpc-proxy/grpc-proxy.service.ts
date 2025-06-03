@@ -64,7 +64,6 @@ export class GrpcProxyService {
       });
       return result;
     } catch (err) {
-      console.log(err);
       throw new BadRequestException(err.details);
     }
   }

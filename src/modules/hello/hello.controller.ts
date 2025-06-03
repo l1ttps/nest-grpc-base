@@ -11,17 +11,15 @@ import { GrpcPayload } from 'src/common/decorators/grpc-payload.decorator';
 import { HelloRequestDto } from './dto/hello.dto';
 import { GrpcMetadataDto } from 'src/common/dto/grpc-metadata.dto';
 
+@Controller()
 export class HelloController {
-  constructor(private readonly helloService: HelloService) {}
+  constructor(private helloService: HelloService) {}
 
   @GrpcMethod(GREETER_SERVICE_NAME)
   sayHello(
     @GrpcPayload(HelloRequestDto) payload: HelloRequest,
     @GrpcMetadata() metadata: GrpcMetadataDto,
   ): HelloResponse {
-    const { name } = payload;
-    return {
-      message: `Hello ${name}`,
-    };
+    return this.helloService.sayHello(payload, metadata);
   }
 }

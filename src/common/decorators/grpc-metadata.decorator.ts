@@ -34,7 +34,6 @@ export const GrpcMetadata = createParamDecorator(
       }
     }
 
-    console.log(instance);
     return instance;
   },
 );
