@@ -5,9 +5,10 @@ import { GrpcServiceMethod } from 'src/types/type';
 import { Request } from 'express';
 import { Metadata } from '@grpc/grpc-js';
 import { convertKeysToCamelCase } from 'src/helper/snakeToCamel';
-import { PORT } from 'src/configs/config';
+import { ConfigService } from '@nestjs/config';
 @Injectable()
 export class GrpcProxyService {
+  constructor(private configService: ConfigService) {}
   private grpcReflectionInstance = {};
   /**
    * HTTP to gRPC bridge.
@@ -25,7 +26,7 @@ export class GrpcProxyService {
   public async httpToGrpc(req: Request, data: any) {
     const grpcMetadata = new Metadata();
     const { packageName, service, method } = this.getServiceMethod(req);
-    const grpcReflectionServer = `0.0.0.0:${PORT}`;
+    const grpcReflectionServer = `0.0.0.0:${this.configService.get('PORT', 3000)}`;
     const packageObject = await packageObjectHelper({
       credentials: grpc.ChannelCredentials.createInsecure(),
       host: grpcReflectionServer,
