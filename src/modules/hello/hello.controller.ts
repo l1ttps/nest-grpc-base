@@ -9,6 +9,7 @@ import { GrpcMethod } from '@nestjs/microservices';
 import { GrpcMetadata } from 'src/common/decorators/grpc-metadata.decorator';
 import { GrpcPayload } from 'src/common/decorators/grpc-payload.decorator';
 import { HelloRequestDto } from './dto/hello.dto';
+import { GrpcMetadataDto } from 'src/common/dto/grpc-metadata.dto';
 
 export class HelloController {
   constructor(private readonly helloService: HelloService) {}
@@ -16,7 +17,7 @@ export class HelloController {
   @GrpcMethod(GREETER_SERVICE_NAME)
   sayHello(
     @GrpcPayload(HelloRequestDto) payload: HelloRequest,
-    @GrpcMetadata() metadata: any,
+    @GrpcMetadata() metadata: GrpcMetadataDto,
   ): HelloResponse {
     const { name } = payload;
     return {
