@@ -9,6 +9,7 @@ import { Logger } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 async function bootstrap() {
   const PORT = process.env.PORT || 3000;
+  const PORT_GRPC = process.env.PORT_GRPC || 50051;
   const grpcProxy = await NestFactory.create(GrpcProxyModule);
   const grpcApp = await NestFactory.createMicroservice<MicroserviceOptions>(
     AppModule,
@@ -17,7 +18,7 @@ async function bootstrap() {
       options: {
         package: HELLO_V1_PACKAGE_NAME,
         protoPath: join(__dirname, './proto/hello.proto'),
-        url: `0.0.0.0:${PORT}`,
+        url: `0.0.0.0:${PORT_GRPC}`,
         onLoadPackageDefinition(pkg, server) {
           new ReflectionService(pkg).addToServer(server);
         },
@@ -35,6 +36,6 @@ async function bootstrap() {
   await grpcProxy.listen(PORT);
   await grpcApp.listen();
   const logger = new Logger();
-  logger.log(`🚀 Application is running on port ${PORT}`);
+  logger.log(`🚀 Application is running on port ${PORT} and ${PORT_GRPC}`);
 }
 bootstrap();

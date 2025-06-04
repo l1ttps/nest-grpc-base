@@ -26,7 +26,7 @@ export class GrpcProxyService {
   public async httpToGrpc(req: Request, data: any) {
     const grpcMetadata = new Metadata();
     const { packageName, service, method } = this.getServiceMethod(req);
-    const grpcReflectionServer = `0.0.0.0:${this.configService.get('PORT', 3000)}`;
+    const grpcReflectionServer = `0.0.0.0:${this.configService.get('PORT_GRPC', 50051)}`;
     const packageObject = await packageObjectHelper({
       credentials: grpc.ChannelCredentials.createInsecure(),
       host: grpcReflectionServer,
