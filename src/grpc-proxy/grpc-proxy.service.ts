@@ -12,11 +12,11 @@ export class GrpcProxyService implements OnModuleInit {
   private grpcReflectionInstance = {};
   private grpcMetadata = new Metadata();
   private grpcReflectionServer: string;
-  
+
   onModuleInit() {
     this.grpcReflectionServer = `0.0.0.0:${this.configService.get('PORT_GRPC', 50051)}`;
   }
-  
+
   /**
    * Initializes the gRPC reflection instance for a given package and service.
    * This method should be called during initialization to set up the gRPC client.
@@ -44,7 +44,10 @@ export class GrpcProxyService implements OnModuleInit {
     const [protoName, version] = packageName.split('.');
     this.grpcReflectionInstance[packageName] = new packageObject[protoName][
       version
-    ][service](this.grpcReflectionServer, grpc.ChannelCredentials.createInsecure());
+    ][service](
+      this.grpcReflectionServer,
+      grpc.ChannelCredentials.createInsecure(),
+    );
   }
 
   /**
@@ -62,7 +65,7 @@ export class GrpcProxyService implements OnModuleInit {
    */
   public async httpToGrpc(req: Request, data: any) {
     const { packageName, service, method } = this.getServiceMethod(req);
-    
+
     // Initialize gRPC client if not already initialized
     if (!this.grpcReflectionInstance[packageName]) {
       await this.initGrpcClient(packageName, service);
