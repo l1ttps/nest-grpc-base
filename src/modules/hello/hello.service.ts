@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { GrpcMetadataDto } from 'src/common/dto/grpc-metadata.dto';
 import { HelloRequest } from 'src/types/proto/hello';
 
@@ -14,8 +14,9 @@ export class HelloService {
 
   public sayHello(payload: HelloRequest, metadata: GrpcMetadataDto) {
     const { name } = payload;
+    Logger.log(`Metadata: ${JSON.stringify(metadata)}`);
     return {
-      message: `Hello ${name}, your metadata is ${JSON.stringify(metadata)}`,
+      message: `Hello ${name}`,
     };
   }
 }

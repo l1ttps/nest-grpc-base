@@ -1,5 +1,4 @@
 import * as grpc from '@grpc/grpc-js';
-import { Metadata } from '@grpc/grpc-js';
 import { BadRequestException, Injectable, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Request } from 'express';
@@ -10,7 +9,6 @@ import { GrpcServiceMethod } from 'src/types/type';
 export class GrpcProxyService implements OnModuleInit {
   constructor(private configService: ConfigService) {}
   private grpcReflectionInstance = {};
-  private grpcMetadata = new Metadata();
   private grpcReflectionServer: string;
 
   onModuleInit() {
@@ -70,12 +68,26 @@ export class GrpcProxyService implements OnModuleInit {
     if (!this.grpcReflectionInstance[packageName]) {
       await this.initGrpcClient(packageName, service);
     }
+    const grpcMetadata = new grpc.Metadata();
+    const skipHeaders = ['connection', 'content-length', 'host'];
+
+    Object.entries(req.headers).forEach(([key, value]) => {
+      const lowerKey = key.toLowerCase();
+      if (skipHeaders.includes(lowerKey)) return;
+      if (value === undefined) return;
+
+      if (Array.isArray(value)) {
+        value.forEach((v) => grpcMetadata.add(lowerKey, String(v)));
+      } else {
+        grpcMetadata.add(lowerKey, String(value));
+      }
+    });
 
     try {
       const result = await new Promise((resolve, reject) => {
         this.grpcReflectionInstance[packageName][method](
           data,
-          this.grpcMetadata,
+          grpcMetadata,
           (err, data) => {
             if (err) {
               reject(err);
