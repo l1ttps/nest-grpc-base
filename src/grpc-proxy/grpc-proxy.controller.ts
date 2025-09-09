@@ -1,6 +1,6 @@
 import { Body, Controller, Get, Param, Post, Req } from '@nestjs/common';
-import { GrpcProxyService } from './grpc-proxy.service';
 import { Request } from 'express';
+import { GrpcProxyService } from './grpc-proxy.service';
 import { GrpcProxyDto, HttpToGrpcParams } from './grpc.proxy.dto';
 
 @Controller()
